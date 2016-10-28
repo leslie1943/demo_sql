@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>The use of nodejs to achieve real-time push MySQL database up-to-date information to the client</title>
+	<style>
+		td{
+			background:#ddd;
+		}
+		time{
+			color:gray;
+		}
+		table{
+			border-left: black 1px solid;
+			border-right: black 1px solid;
+			border-bottom:black 1px solid;
+			border-top:black 1px solid;
+			padding-left: 2px;
+			padding-right: 2px;
+			padding-top:2px;
+			padding-bottom: 2px;
+			font-size: 12px;
+			cursor:hand;
+			color:#000000;
+			filter: progid: DXImageTransfor.Microsoft.Gradient(GradientType=0,StartColorStr=#ffffff,EndColorStr=#d4d0c8);
+		}
+		th{
+			text-align: center;background-color: #006699;font-size: 14px;
+			font-family: "Arial";color:#F2F3F7;padding: 2px;line-height: 22px;
+		}
+		.row_add{
+			text-align: center;background-color: #ccd2de;height: 4px;font-size: 12px;line-height: 15px; padding: 2px
+		}
+	</style>
+</head>
+
+<body>
+	<time></time>
+	<div id="container">Loading...</div>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript">
+		//create websocket connection
+		var socket = io.connect("http://localhost:3000");
+		socket.on('notification',function(data){
+			var rs_html = "<table align='center'><thead>";
+			rs_html += "<tr>";
+			rs_html += "<th>#</th>";
+			rs_html += "<th>user id</th>";
+			rs_html += "<th>user name</th>";
+			rs_html += "<th>email</th>";
+			rs_html += "<th>Report to:</th>";
+			rs_html += "<th>Role</th>";
+			rs_html += "</tr></thead>";
+			rs_html += "<tbody>";
+
+			$.each(data.names,function(index,name){
+				rs_html += "<tr>"
+				rs_html += "<td>" + (index + 1) + "</td>";
+				rs_html += "<td>" + name.people_id + "</td>";
+				rs_html += "<td>" + name.people_name + "</td>";
+				rs_html += "<td>" + name.people_email + "</td>";
+				rs_html += "<td>" + name.people_group + "</td>";
+				rs_html += "<td>" + name.people_work + "</td>";
+				rs_html += "</tr>";
+			});
+			rs_html += "</tbody></table>";
+			$("#container").html(rs_html);
+			$('time').html("Last time: " + data.time);
+		});
+	</script>
+</body>
+</html>
